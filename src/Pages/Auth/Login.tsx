@@ -2,37 +2,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { LuEyeClosed } from "react-icons/lu";
-import { LuEye } from "react-icons/lu";
-import { useNavigate } from "react-router";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
+import { Link } from "react-router";
+import AuthMutations from "./AuthMutations";
 
 function Login() {
-  const [userName, setUserName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordView, setPasswordView] = useState<string>("password");
-  const navigate = useNavigate();
 
-  const cursorStyle = !userName || !password ? "cursor-not-allowed" : "";
+  const cursorStyle = !email || !password ? "cursor-not-allowed" : "";
 
+  const { loginMutation } = AuthMutations();
   function handleSignIn() {
-    const success = userName === "lilkmbr" && password === "lilkmbr";
-    if (success) {
-      toast.success("Login Successful");
-      localStorage.setItem("user", JSON.stringify({ name: userName }));
-      navigate("/");
-    } else {
-      toast.error("Login Failed");
-    }
+    if (!email || !password) return toast.error("Please fill all the fields");
+
+    loginMutation.mutate({ email: email, password });
   }
   return (
     <div className="flex justify-center items-center h-full w-full md:min-w-[300px]">
       <div className="flex flex-col gap-5">
         <h3 className="text-3xl font-bold">Sign In</h3>
         <div>
-          <label>User Name</label>
+          <label>Email</label>
           <Input
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             type="text"
             required
             className="bg-white"
@@ -59,13 +54,13 @@ function Login() {
               {passwordView === "password" ? <LuEyeClosed /> : <LuEye />}
             </div>
           </div>
-          <a href="auth/resetpassword" className="text-xs underline">
+          <Link to="auth/resetpassword" className="text-xs underline">
             Forgot Password?
-          </a>
+          </Link>
         </div>
         <Button
           variant="default"
-          disabled={!userName || !password}
+          disabled={!email || !password}
           className={`mt-5 ${cursorStyle}`}
           type="submit"
           onClick={handleSignIn}
@@ -73,11 +68,11 @@ function Login() {
           Proceed
         </Button>
         <hr />
-        <a href="auth/register">
+        <Link to="/auth/register">
           <Button variant="default" className="w-full" type="submit">
             A New User ?
           </Button>
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -41,6 +41,7 @@ const Layout: React.FC = () => {
       <div className="px-10 py-4">
         <Outlet />
       </div>
+      {/* <Footer /> */}
     </>
   );
 };

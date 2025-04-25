@@ -1,17 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { LuEyeClosed } from "react-icons/lu";
-import { LuEye } from "react-icons/lu";
+import toast from "react-hot-toast";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
+import { Link } from "react-router";
+import AuthMutations from "./AuthMutations";
 
 function Register() {
   const [userName, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
   const [passwordView, setPasswordView] = useState<string>("password");
   const [email, setEmail] = useState<string>("");
 
-  function handleRegisted() {}
+  const { registerMutation } = AuthMutations();
+
+  function handleRegisted() {
+    if (!userName || !email || !password)
+      return toast.error("Please fill all the fields");
+
+    registerMutation.mutate({ name: userName, email, password });
+  }
   return (
     <div className="flex justify-center items-center h-full w-full md:min-w-[300px]">
       <div className="flex flex-col gap-5">
@@ -68,11 +76,11 @@ function Register() {
           Proceed
         </Button>
         <hr />
-        <a href="/auth">
+        <Link to="/auth">
           <Button variant="default" className="w-full" type="submit">
             Have an account ?
           </Button>
-        </a>
+        </Link>
       </div>
     </div>
   );

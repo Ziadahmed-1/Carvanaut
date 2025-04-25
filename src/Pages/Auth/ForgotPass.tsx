@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { Link } from "react-router";
 
 function ForgotPass() {
   const [email, setEmail] = useState<string>("");
@@ -30,16 +31,16 @@ function ForgotPass() {
         </Button>
         <hr />
         <div className="flex gap-5 justify-between">
-          <a className="w-full" href="/auth">
+          <Link className="w-full" to="/auth">
             <Button variant="default" className="w-full" type="submit">
               Sign In
             </Button>
-          </a>
-          <a className="w-full" href="/auth/register">
+          </Link>
+          <Link className="w-full" to="/auth/register">
             <Button variant="default" className="w-full" type="submit">
               Register
             </Button>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

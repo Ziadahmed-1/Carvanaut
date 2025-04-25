@@ -4,6 +4,11 @@ import DropDown from "../components/DropDown";
 import { Button } from "./ui/button";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useNavigate } from "react-router";
+import { Link } from "react-router";
+import useMainStore from "../Zustand/Main/MainStore";
+import { useEffect } from "react";
+import { GrFavorite } from "react-icons/gr";
+import { CiBoxList } from "react-icons/ci";
 
 type option = {
   name: string;
@@ -11,41 +16,65 @@ type option = {
   action?: () => void;
 };
 
-const handleLogOut = () => {
-  localStorage.removeItem("user");
-  window.location.reload();
-};
-
 function NavBar() {
+  const { user, setUser } = useMainStore((state) => state);
+  console.log(user);
   const navigate = useNavigate();
-  const userData = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user") as string)
-    : null;
 
   const handleLogIn = () => {
     navigate("/auth");
   };
 
+  const handleLogOut = () => {
+    localStorage.removeItem("authUser");
+    setUser();
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    setUser();
+  }, []);
+
   const userDDOptions: option[] = [
     {
       name: "Log Out",
-      icon: <CiLogout />,
+      icon: <CiLogout size={16} />,
       action: handleLogOut,
+    },
+    {
+      name: "Favorites",
+      icon: <GrFavorite size={16} />,
+      action: () => navigate("/favorites"),
+    },
+    {
+      name: "My Listings",
+      icon: <CiBoxList size={16} />,
+      action: () => navigate("/my-listings"),
     },
   ];
 
   const authenticatedMobileOptions: option[] = [
     {
       name: "Log Out",
-      icon: <CiLogout />,
+      icon: <CiLogout size={16} />,
       action: handleLogOut,
+    },
+    {
+      name: "Favorites",
+      icon: <GrFavorite size={16} />,
+      action: () => navigate("/favorites"),
+    },
+    {
+      name: "My Listings",
+      icon: <CiBoxList size={16} />,
+      action: () => navigate("/my-listings"),
     },
   ];
 
   const mobileOptions: option[] = [
     {
       name: "Sign In",
-      icon: <CiLogin />,
+      icon: <CiLogin size={16} />,
       action: handleLogIn,
     },
   ];
@@ -53,40 +82,40 @@ function NavBar() {
     <div className="w-screen sticky top-0 z-50 border-b-2 flex items-center justify-between px-10 py-4">
       <div>
         <img src="" alt="" />
-        <a href="/">
+        <Link to="/">
           <h3 className="font-bold text-3xl">Carvanaut</h3>
-        </a>
+        </Link>
       </div>
       <ul className="flex gap-5">
         <li>
-          <a href="page1">Page 1</a>
+          <Link to="page1">Page 1 </Link>
         </li>
         <li>
-          <a href="page2">Page 2</a>
+          <Link to="page2">Page 2 </Link>
         </li>
         <li>
-          <a href="page3">Page 3</a>
+          <Link to="page3">Page 3 </Link>
         </li>
       </ul>
 
       <div className="hidden md:block">
-        {userData ? (
+        {user ? (
           <DropDown
-            title={userData.name}
+            title={user?.user.name}
             data={userDDOptions}
-            userName={userData?.name}
+            userName={user?.user?.name}
           />
         ) : (
-          <a href="/auth">
+          <Link to="/auth">
             <Button> Login </Button>
-          </a>
+          </Link>
         )}
       </div>
       <div className="md:hidden">
         <DropDown
           title={<RxHamburgerMenu />}
-          data={userData ? authenticatedMobileOptions : mobileOptions}
-          userName={userData?.name || null}
+          data={user?.user ? authenticatedMobileOptions : mobileOptions}
+          userName={user?.user?.name || null}
         />
       </div>
     </div>
